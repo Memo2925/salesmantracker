@@ -1,0 +1,219 @@
+<!-- salesman.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Salesman Page</title>
+  <!--<link rel="stylesheet" href="style.css" />-->
+  <style>
+    body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('https://images.unsplash.com/photo-1491497895121-1334fc14d8c9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  position: relative;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 60px; /* Increased padding */
+  border-radius: 20px; /* Increased border-radius for a more rounded look */
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3); /* Increased shadow */
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Slightly more visible border */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 400px; /* Fixed width */
+  min-width: 350px; /* Ensure it doesn't get too small */
+}
+
+/* Black tint overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+/* Form container */
+.form-container {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.8); /* light cream */
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  width: 100%;
+  max-width: 500px;
+  margin: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Heading style */
+h1 {
+  margin-bottom: 40px; /* Increased margin for more space */
+  color: #fff;
+  text-shadow: 2px 2px 6px #000; /* Stronger text shadow */
+  font-size: 32px; /* Larger text size */
+}
+
+/* Form input fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 1em;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+  outline: none;
+}
+
+/* Submit button */
+button[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  background-color: #4CAF50; /* Green */
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+/* Label styling */
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.1em;
+  color: #333;
+}
+
+/* Optional: Customize text area */
+textarea {
+  resize: vertical;
+  height: 150px;
+}
+
+/* Small text for additional info or error messages */
+small {
+  color: #f44336;
+  font-size: 0.9em;
+  display: block;
+  margin-top: -12px;
+  margin-bottom: 10px;
+}
+
+/* Loading animation */
+.loading-spinner {
+  display: none;
+  text-align: center;
+}
+
+.loading-spinner.active {
+  display: block;
+  margin-top: 20px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Customer Detail</h>
+    <form id="customerForm">
+      <input type="text" id="name" placeholder="Customer Name" required /><br/>
+      <input type="tel" id="phone" placeholder="Phone Number" required /><br/>
+      <input type="file" id="photo" accept="image/*" /><br/>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+   
+
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+
+ 
+  <script src="./firebase-config.js"></script>
+  <script src="./app.js"></script>
+
+  <script>
+  navigator.geolocation.watchPosition(async (position) => {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+  
+    const salesmanId = "SOME_UNIQUE_ID"; // Could be based on login or device UID
+  
+    await db.collection("salesmanLocations").doc(salesmanId).set({
+      lat,
+      lng,
+      timestamp: firebase.firestore.Timestamp.now()
+    });
+  }, (error) => {
+    console.error("Geolocation error:", error.message);
+  }, {
+    enableHighAccuracy: true,
+    maximumAge: 10000,
+    timeout: 10000
+  });
+</script>
+
+<!--<script>
+    // Simulate a salesman sending live GPS updates every 5 seconds
+    setInterval(() => {
+      const randomLat = 24.586 + Math.random() * 0.01;
+      const randomLng = 80.845 + Math.random() * 0.01;
+  
+      // Replace 'testUser' with a real user ID if needed
+      db.collection("salesmanLocations").doc("testUser").set({
+        lat: randomLat,
+        lng: randomLng,
+        timestamp: firebase.firestore.Timestamp.now()
+      }).then(() => {
+        console.log("Fake location updated:", randomLat, randomLng);
+      }).catch(console.error);
+    }, 5000);
+  </script>-->
+  
+  
+
+
+
+
+</body>
+</html>

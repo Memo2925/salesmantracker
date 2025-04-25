@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.json" />
+  <title>Salesman Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Salesman Tracker</h1>
+
+    <div class="redirect-buttons">
+      <button onclick="login('admin@paragtea.com')">Admin</button>
+      <button onclick="login('salesman@paragtea.com')">Salesman</button>
+    </div>
+  </div>
+ <!-- Firebase and Custom Script -->
+ <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+
+  
+
+  <script src="firebase-config.js"></script> <!-- Firebase config setup -->
+
+  <script>
+    async function login(roleEmail) {
+      const password = prompt("Please enter your password:");
+
+      if (password) {
+        try {
+          // Try logging in with the provided email and password
+          const userCredential = await firebase.auth().signInWithEmailAndPassword(roleEmail, password);
+          const userEmail = userCredential.user.email;
+
+          if (userEmail === "admin@paragtea.com") {
+            window.location.href = "admin.html";  // Redirect to admin page
+          } else if (userEmail === "salesman@paragtea.com") {
+            window.location.href = "salesman.html";  // Redirect to salesman page
+          } else {
+            alert("Access restricted: Unauthorized role");
+            firebase.auth().signOut();
+          }
+        } catch (error) {
+          alert("Login failed: " + error.message);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

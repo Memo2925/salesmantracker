@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f4f4f4; /* Light background color */
+  background-image: url('https://images.unsplash.com/photo-1491497895121-1334fc14d8c9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Add your desired image */
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+  transition: background-color 0.3s ease;
+}
+h1,h2{
+  margin-bottom: 40px; /* Increased margin for more space */
+  color: #fff;
+  text-shadow: 2px 2px 6px #000; /* Stronger text shadow */
+  font-size: 32px; /* Larger text size */
+}
+p{
+  /* Increased margin for more space */
+  color: #fff;
+  text-shadow: 1px 1px 3px #000; /* Stronger text shadow */
+  font-size: 16px; /* Larger text size */
+}
+
+/* Black tint overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* black tint with opacity */
+  z-index: -1;
+}
+
+nav {
+  margin-bottom: 20px;
+}
+
+button.tab-btn {
+  margin-right: 10px;
+  padding: 10px 20px;
+  background-color: #2e7d32; /* Forest Green */
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button.tab-btn:hover {
+  background-color: #1b5e20; /* Darker Forest Green on hover */
+  transform: scale(1.05); /* Hover animation */
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.5s ease-in-out; /* Animation for content */
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background-color: rgba(255, 255, 255, 0.9); /* Light background for table */
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+th {
+  background-color: #2e7d32; /* Forest Green background for headers */
+  color: white;
+}
+
+td {
+  background-color: #f9f9f9; /* Light background for table cells */
+  color: #333; /* Dark text for readability */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+  </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+
+</head>
+<body>
+ 
+    <!-- Firebase Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+
+
+
+  <h1>Admin Dashboard</h1>
+
+  <nav>
+    <button class="tab-btn" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="tab-btn" onclick="showTab('map')">Map</button>
+    <button class="tab-btn" onclick="showTab('salesman')">Salesman Detail</button>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="tab-content active">
+    <h2>Customer Entries</h2>
+    <button onclick="downloadCSV()">Download CSV</button>
+    <table id="customer-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Time of Entry</th>
+          <th>Locality</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data from Firestore will populate here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MAP -->
+  <div id="map" class="tab-content">
+    <h2>Visited Locations</h2>
+    <div id="map-container" style="height: 500px; width: 100%;"></div>
+  </div>
+
+  <!-- SALESMAN DETAIL -->
+  <div id="salesman" class="tab-content">
+    
+    <h2>Salesman Details</h2>
+<p>
+  <strong>Name:</strong> <span id="salesman-name">-</span>
+  <input type="text" id="salesman-name-input" placeholder="Enter name" style="display:none;" />
+</p>
+<p>
+  <strong>Phone:</strong> <span id="salesman-phone">-</span>
+  <input type="text" id="salesman-phone-input" placeholder="Enter phone" style="display:none;" />
+</p>
+<button id="edit-salesman-btn">Edit</button>
+<button id="save-salesman-btn" style="display:none;">Save</button>
+    <p><strong>Houses Covered (Total):</strong> <span id="total-houses">-</span></p>
+    <p><strong>Houses Covered (Today):</strong> <span id="today-houses">-</span></p>
+    <p><strong>Hours Online Today:</strong> <span id="online-hours">-</span></p>
+  </div>
+
+
+  <!-- Your Firebase config -->
+<script src="./firebase-config.js"></script>
+
+<!-- Your main logic file -->
+<script src="./admin.js"></script>
+  
+  <!-- Scripts -->
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+  <script>
+    window.addEventListener("DOMContentLoaded", loadCustomers);
+  </script>
+  <script>
+    async function initMap() {
+      const map = L.map('map-container').setView([24.5891, 80.8452], 13);
+
+      
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+        const salesmanId = "SOME_UNIQUE_ID"; // Same as above
+        let marker;
+
+        db.collection("salesmanLocations").doc(salesmanId)
+        .onSnapshot((doc) => {
+        const data = doc.data();
+         if (!data) return;
+
+        const { lat, lng } = data;
+
+        if (!marker) {
+        marker = L.marker([lat, lng]).addTo(map).bindPopup("Salesman Current Location");
+        } else {
+        marker.setLatLng([lat, lng]);
+        }
+        });
+
+        //const salesmanDocRef = db.collection("salesmanLocations").doc("testUser"); // 'testUser' is the doc ID for your salesman
+
+  /* Real-time listener for location updates
+  salesmanDocRef.onSnapshot((doc) => {
+    const data = doc.data();
+
+    if (data && data.lat && data.lng) {
+      const lat = data.lat;
+      const lng = data.lng;
+
+      // If the marker exists, update its position; otherwise, create a new marker
+      if (marker) {
+        marker.setLatLng([lat, lng]);
+      } else {
+        marker = L.marker([lat, lng]).addTo(map);
+      }
+
+      // Optional: Adjust map to center on the salesman location
+      map.setView([lat, lng], 13);
+    }
+  });*/
+
+    
+      const snapshot = await db.collection("customers").get();
+    
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.location?.latitude && data.location?.longitude) {
+          const marker = L.marker([data.location.latitude, data.location.longitude]).addTo(map);
+          marker.bindPopup(`
+            <strong>${data.name}</strong><br/>
+            ${data.phone}<br/>
+            <em>${data.timestamp?.toDate().toLocaleString() || ''}</em>
+          `);
+        }
+      });
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      if (document.getElementById("map")) {
+        initMap();
+      }
+    });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('https://images.unsplash.com/photo-1491497895121-1334fc14d8c9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Black tint overlay */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* black tint */
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 60px; /* Increased padding */
+  border-radius: 20px; /* Increased border-radius for a more rounded look */
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3); /* Increased shadow */
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Slightly more visible border */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 400px; /* Fixed width */
+  min-width: 350px; /* Ensure it doesn't get too small */
+}
+
+.container:hover {
+  transform: translateY(-8px); /* Slightly bigger hover effect */
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5); /* Larger shadow on hover */
+}
+
+h1 {
+  margin-bottom: 40px; /* Increased margin for more space */
+  color: #fff;
+  text-shadow: 2px 2px 6px #000; /* Stronger text shadow */
+  font-size: 32px; /* Larger text size */
+}
+
+button {
+  margin: 20px; /* Increased margin between buttons */
+  padding: 20px 50px; /* Larger button padding */
+  font-size: 22px; /* Larger font size */
+  border: none;
+  border-radius: 12px; /* Larger border radius */
+  background-color: #2e7d32; /* Forest Green */
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #1b5e20;
+  transform: scale(1.1); /* Larger scaling effect */
+}
+
