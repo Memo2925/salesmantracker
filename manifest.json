@@ -1,11 +1,5 @@
 {
-    "name": "Salesman Tracker",
-    "short_name": "Tracker",
-    "start_url": ".",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#2196f3"
-    
-  }
+    "name": "Salesman Tracker"
+}
   
   

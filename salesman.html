@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Salesman Page</title>
   <!--<link rel="stylesheet" href="style.css" />-->
   <style>
@@ -32,6 +33,11 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 400px; /* Fixed width */
   min-width: 350px; /* Ensure it doesn't get too small */
+  overflow-x: hidden; /* hide sideways scroll */
+  overflow-y: auto;   /* allow vertical scroll */
+  width: 90%;
+  max-width: 500px;
+  margin: auto;
 }
 
 /* Black tint overlay */

@@ -74,7 +74,7 @@ async function loadCustomers() {
     if (tabId === 'map' && mapInstance) {
         setTimeout(() => {
           mapInstance.invalidateSize();
-        }, 100); // slight delay helps ensure it's visible
+        }, 300); // slight delay helps ensure it's visible
       }
   }
   

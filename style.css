@@ -9,6 +9,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-x: hidden; /* hide sideways scroll */
+  overflow-y: auto;   /* allow vertical scroll */
 }
 
 /* Black tint overlay */
@@ -36,6 +38,9 @@ body::before {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 400px; /* Fixed width */
   min-width: 350px; /* Ensure it doesn't get too small */
+  width: 90%;
+  max-width: 500px;
+  margin: auto;
 }
 
 .container:hover {
